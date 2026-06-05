@@ -1,0 +1,15 @@
+# Dockerfile.nginx
+# Image Nginx personnalisee avec la configuration de securite
+FROM nginx:alpine
+
+# Copier la configuration Nginx
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Supprimer la configuration par defaut
+RUN rm -f /etc/nginx/conf.d/default.conf
+
+# Exposer le port 80
+EXPOSE 80
+
+# Lancer Nginx en mode foreground
+CMD ["nginx", "-g", "daemon off;"]

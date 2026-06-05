@@ -13,10 +13,12 @@ jobs:
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
-      - name: Verifier la syntaxe de nginx.conf
+      - name: Verifier la syntaxe de nginx.conf avec sed pour remplacer hostnames
         run: |
-          docker run --rm -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro nginx:alpine nginx -t
-          echo Syntaxe valide
+          # Remplacer les hostnames non-resolvables par 127.0.0.1 pour le test de syntaxe
+          sed 's/app1:3000/127.0.0.1:3000/g; s/app2:3001/127.0.0.1:3001/g' nginx/nginx.conf > /tmp/nginx-test.conf
+          docker run --rm -v /tmp/nginx-test.conf:/etc/nginx/nginx.conf:ro nginx:alpine nginx -t
+          echo Syntaxe nginx.conf valide
 
   integration-tests:
     name: Tests fonctionnels Nginx
